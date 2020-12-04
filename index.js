@@ -189,11 +189,14 @@ app.post('/api', jsonMiddleware, (req, resp) => {
         const ordered = [];
         var   totalPrice = 0;
         for (let dishId of dishIds) {
-            dish = menu.findOne(dish => dish.id === dishId);
+            const dish = menu.findOne(dish => dish.id === dishId);
 
             ordered.push(dishId);
             totalPrice += dish.price;
         }
+
+        console.log(`Dishids: ${dishIds}`);
+        console.log(`TotalPrice: ${totalPrice}`);
 
 
         if (ordered.length < 1) {
@@ -214,7 +217,7 @@ app.post('/api', jsonMiddleware, (req, resp) => {
             agent.add(`
                 Pomyślnie złożyłeś zamówienie! Zamówienie możesz odebrać o
                 ${time.toLocaleTimeString("pl-PL", {hour: '2-digit', minute:'2-digit'})},
-                ${date.toLocaleDateString("pl-PL")}, Cena za całość to ${totalPrice}. Do zobaczenia! 
+                ${date.toLocaleDateString("pl-PL")}, Cena za całość to ${totalPrice}zł. Do zobaczenia! 
             `);
         }
     });
