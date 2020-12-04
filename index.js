@@ -88,8 +88,8 @@ app.post('/api', jsonMiddleware, (req, resp) => {
 
             agent.add(`
                 Pomyślnie zarezerwowałeś stolik! Oczekujemy Cię o
-                ${time.toLocaleTimeString("pl-PL", {hour: '2-digit', minute:'2-digit'})},
-                ${date.toLocaleDateString("pl-PL")}, do zobaczenia! 
+                ${time.toLocaleTimeString("pl-PL", {hour: '2-digit', minute:'2-digit', timeZone: 'Europe/Warsaw'})},
+                ${date.toLocaleDateString("pl-PL", {timeZone: 'Europe/Warsaw'})}, do zobaczenia! 
             `);
         }
     });
@@ -126,8 +126,8 @@ app.post('/api', jsonMiddleware, (req, resp) => {
     });
 
     intentMap.set('free tables query', async () => {
-        const date   =  new Date(parameters['date']);
-        const time   = new Date(parameters['time']);
+        const date   =  new Date(parameters['orderDate']);
+        const time   = new Date(parameters['orderTime']);
         const minTableSize = parseInt(parameters['tableSize']);
 
         freeTables = findFreeTables(date, time, minTableSize);
@@ -180,24 +180,22 @@ app.post('/api', jsonMiddleware, (req, resp) => {
         const limit = menu.count();
 
         const person = parameters['person'].name;
-        const date   =  new Date(parameters['date']);
-        const time   = new Date(parameters['time']);
-        const dishIds = parameters['dishIds']
-                        .map(parseInt)
+        const date   =  new Date(parameters['orderDate']);
+        const time   = new Date(parameters['orderTime']);
+
+        const dishIds = parameters['dishIds'].toString()
+                        .split(",")
+                        .map(Number)
                         .filter(dishId => dishId >= 1 && dishId <= limit);
 
         const ordered = [];
         var   totalPrice = 0;
         for (let dishId of dishIds) {
-            const dish = menu.findOne(dish => dish.id === dishId);
+            const dish = menu.findOne((d) => d.id === dishId);
 
             ordered.push(dishId);
             totalPrice += dish.price;
         }
-
-        console.log(`Dishids: ${dishIds}`);
-        console.log(`TotalPrice: ${totalPrice}`);
-
 
         if (ordered.length < 1) {
             agent.add(`
@@ -216,15 +214,15 @@ app.post('/api', jsonMiddleware, (req, resp) => {
 
             agent.add(`
                 Pomyślnie złożyłeś zamówienie! Zamówienie możesz odebrać o
-                ${time.toLocaleTimeString("pl-PL", {hour: '2-digit', minute:'2-digit'})},
-                ${date.toLocaleDateString("pl-PL")}, Cena za całość to ${totalPrice}zł. Do zobaczenia! 
+                ${time.toLocaleTimeString("pl-PL", {hour: '2-digit', minute:'2-digit', timeZone: 'Europe/Warsaw'})},
+                ${date.toLocaleDateString("pl-PL", {timeZone: 'Europe/Warsaw'})}, Cena za całość to ${totalPrice}zł. Do zobaczenia! 
             `);
         }
     });
 
     intentMap.set('order expected wait time query', async () => {
-        const date   =  new Date(parameters['date']);
-        const time   = new Date(parameters['time']);
+        const date   =  new Date(parameters['orderDate']);
+        const time   = new Date(parameters['orderTime']);
 
         const orderCount = countOrders(date, time);
 
@@ -235,7 +233,7 @@ app.post('/api', jsonMiddleware, (req, resp) => {
         }
         else if (orderCount < 20) {
             agent.add(`
-                Mamy kilka zamówień $(orderCount), ale nie powinno być żadnych opóźnień
+                Mamy kilka zamówień - ${orderCount}, ale nie powinno być żadnych opóźnień
             `);
         } 
         else {
