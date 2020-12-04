@@ -263,7 +263,7 @@ app.get('/', (req, resp) => {
 
 app.use(express.static('./static/'));
 
-app.listen(8080);
+app.listen(process.env.PORT || 8080);
 
 
 function findFreeTables(date, time, minTableSize) {
