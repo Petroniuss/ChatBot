@@ -261,7 +261,10 @@ app.get('/', (req, resp) => {
     resp.sendFile('index.html', { root: __dirname + '/static/'});
 })
 
+app.use(express.static('./static/'));
+
 app.listen(8080);
+
 
 function findFreeTables(date, time, minTableSize) {
     const taken = tableReservations.where((res) => {

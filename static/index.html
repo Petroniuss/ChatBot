@@ -6,14 +6,29 @@
   <meta name="Patryk Wojtyczek" content="SitePoint">
 
   <style>
-      .container {
-          height: 100%;
-          margin: 0;
-          padding: 0;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-      }
+    body {
+       background-image: url("b1.jpg");
+       background-size: 100% 100%;
+
+       padding: 0;
+       margin: 0;
+       box-sizing: border-box;
+    }
+
+    .container {
+        height: 100%;
+        margin: 0;
+        margin-top: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .container iframe {
+      margin-left: auto;
+    }
+
   </style>
 </head>
 
@@ -22,7 +37,7 @@
 <div class="container">
     <iframe allow="microphone;"
         width="450"
-        height="630"
+        height="100%"
         class = "chat"
         src="https://console.dialogflow.com/api-client/demo/embedded/55483f4a-fd4f-4143-bd8c-4126f3a1fcac">
     </iframe>
