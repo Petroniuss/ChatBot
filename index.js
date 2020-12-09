@@ -126,11 +126,12 @@ app.post('/api', jsonMiddleware, (req, resp) => {
     });
 
     intentMap.set('free tables query', async () => {
-        const date   =  new Date(parameters['orderDate']);
-        const time   = new Date(parameters['orderTime']);
+        const date   =  new Date(parameters['date']);
+        const time   = new Date(parameters['time']);
         const minTableSize = parseInt(parameters['tableSize']);
 
         freeTables = findFreeTables(date, time, minTableSize);
+
         freeTablesNumber = freeTables.length;
 
         if (time.getHours() < 10 || time.getHours() > 22) {
@@ -191,7 +192,7 @@ app.post('/api', jsonMiddleware, (req, resp) => {
         const ordered = [];
         var   totalPrice = 0;
         for (let dishId of dishIds) {
-            const dish = menu.findOne((d) => d.id === dishId);
+            const dish = menu.findOne({'id': dishId});
 
             ordered.push(dishId);
             totalPrice += dish.price;
